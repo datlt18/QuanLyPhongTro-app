@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Quản lý phòng</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4A90E2">
+
+  <!-- iPhone -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PhongTro">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>🏠 Quản lý phòng</header>
+
+<div class="container">
+
+  <div class="summary">
+    <div>💰 Tổng thu</div>
+  </div>
+
+  <input id="search" placeholder="🔍 Tìm phòng...">
+
+  <div id="roomList"></div>
+
+</div>
+
+<div class="fab" onclick="addRoom()">+</div>
+
+<div class="bottom-nav">
+  <div>🏠<br>Home</div>
+  <div>📊<br>Báo cáo</div>
+  <div>⚙️<br>Cài đặt</div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+
+</body>
+</html>
