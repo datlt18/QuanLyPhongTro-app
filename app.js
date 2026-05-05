@@ -1,11 +1,5 @@
 const API_URL = "https://docs.google.com/spreadsheets/d/10oHoU4QOl17oRTXcWHlvtG0TPpNvLufcUCpXPXEQy7o/edit?usp=sharing";
 
-async function loadRooms() {
-  const res = await fetch(API_URL);
-  const data = await res.json();
-  renderRooms(data);
-}
-
 function renderRooms(rooms) {
   const list = document.getElementById("roomList");
   list.innerHTML = "";
@@ -13,23 +7,23 @@ function renderRooms(rooms) {
   rooms.forEach(r => {
     const div = document.createElement("div");
 
-    div.className = "room-card " + (r.status || "empty");
+    const status = r.status || "empty";
+    div.className = "room-card " + status;
+
+    let badgeText = {
+      paid: "Đã đóng",
+      unpaid: "Chưa đóng",
+      empty: "Phòng trống"
+    }[status];
 
     div.innerHTML = `
-      <b>${r.room}</b> - ${r.name || "Trống"}<br>
-      💵 ${format(r.rent)} | ⚡ ${r.electric || 0}
+      <div class="room-header">${r.room} - ${r.name || "Trống"}</div>
+      <div class="room-sub">
+        💵 ${format(r.rent)} | ⚡ ${r.electric || 0} | 💧 ${r.water || 0}
+      </div>
+      <div class="badge ${status}">${badgeText}</div>
     `;
 
     list.appendChild(div);
   });
 }
-
-function format(n) {
-  return n ? Number(n).toLocaleString("vi-VN") + "đ" : "-";
-}
-
-function addRoom() {
-  alert("Chức năng sẽ làm sau");
-}
-
-loadRooms();
