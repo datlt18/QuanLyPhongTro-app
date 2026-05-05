@@ -2,7 +2,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont;
-  background: #f2f2f7;
+  background: red !important;
   color: #111;
 }
 
