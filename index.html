@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soo Yun Residence</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+
+  <meta name="theme-color" content="#146c43">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <h1>Soo Yun Residence</h1>
+    <p>Tháng 5 - 2026</p>
+  </header>
+
+  <section class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-title">Phòng đang thuê</div>
+      <div class="summary-number">8/10</div>
+      <div class="summary-sub">80% lấp đầy</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">Thu tháng này</div>
+      <div class="summary-number">14.2M</div>
+      <div class="summary-sub">+2 chưa thu</div>
+    </div>
+  </section>
+
+  <section class="section-title">
+    DANH SÁCH PHÒNG
+  </section>
+
+  <div id="roomList"></div>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">Tổng quan</a>
+    <a href="pages/rooms.html" class="nav-item">Phòng</a>
+    <a href="pages/tenants.html" class="nav-item">Khách thuê</a>
+    <a href="pages/invoices.html" class="nav-item">Hóa đơn</a>
+    <a href="pages/settings.html" class="nav-item">Cài đặt</a>
+  </nav>
+
+</div>
+
+<script src="js/rooms.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js');
+}
+</script>
+
+</body>
+</html>

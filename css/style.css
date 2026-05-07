@@ -1,0 +1,83 @@
+* {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.room-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.room-tenant {
+  color: #666;
+  font-size: 14px;
+}
+
+.room-price {
+  color: #777;
+  font-size: 14px;
+}
+
+.status {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.status-paid {
+  background: #dff3ea;
+  color: #146c43;
+}
+
+.status-unpaid {
+  background: #fff0c7;
+  color: #b78103;
+}
+
+.status-overdue {
+  background: #ffdede;
+  color: #d92d20;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 420px;
+  margin: auto;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 0;
+  border-top: 1px solid #ddd;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #666;
+  font-size: 14px;
+}
+
+.nav-item.active {
+  color: #146c43;
+  font-weight: bold;
+}
+
+.page {
+  padding: 20px;
+}
+
+.page h2 {
+  margin-bottom: 16px;
+}
+
+.list-item {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
