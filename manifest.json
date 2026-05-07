@@ -1,8 +1,0 @@
-{
-  "name": "Quan ly phong tro",
-  "short_name": "PhongTro",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4A90E2"
-}
