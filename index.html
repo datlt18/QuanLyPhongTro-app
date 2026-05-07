@@ -2,55 +2,304 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Quản lý phòng</title>
-
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4A90E2">
-
-  <!-- iPhone -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="PhongTro">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <link rel="stylesheet" href="style.css?v=2">
-  <script src="app.js"></script>
+  <meta name="apple-mobile-web-app-title" content="Phòng Trọ">
+  <meta name="theme-color" content="#1a6b4a">
+  <meta name="description" content="Ứng dụng quản lý nhà trọ">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Quản Lý Phòng Trọ</title>
 </head>
-
 <body>
 
-<header>🏠 Quản lý phòng</header>
-
-<div class="container">
-
-  <div class="summary">
-    <div>💰 Tổng thu</div>
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div class="loading-logo">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <rect width="56" height="56" rx="16" fill="#1a6b4a"/>
+        <path d="M14 36L28 16L42 36H14Z" fill="white" opacity="0.9"/>
+        <rect x="22" y="28" width="12" height="12" rx="2" fill="white"/>
+        <rect x="25" y="31" width="6" height="9" fill="#1a6b4a"/>
+      </svg>
+      <span>Phòng Trọ</span>
+    </div>
+    <div class="loading-spinner"></div>
   </div>
 
-  <input id="search" placeholder="🔍 Tìm phòng...">
+  <!-- APP WRAPPER -->
+  <div id="app" class="app hidden">
 
-  <div id="roomList"></div>
+    <!-- STATUS BAR SPACER (iOS) -->
+    <div class="status-bar-spacer"></div>
 
-</div>
+    <!-- HEADER -->
+    <header id="app-header">
+      <div class="header-left">
+        <button id="back-btn" class="btn-icon hidden" onclick="App.goBack()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        </button>
+        <div id="header-title">
+          <h1 id="page-title">Tổng Quan</h1>
+          <p id="page-subtitle"></p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button id="header-action-btn" class="btn-icon hidden"></button>
+        <button id="sync-btn" class="btn-icon" onclick="Sheets.sync()" title="Đồng bộ dữ liệu">
+          <svg id="sync-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+        </button>
+        <button class="btn-icon" onclick="App.navigate('settings')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
 
-<div class="fab" onclick="addRoom()">+</div>
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
 
-<div class="bottom-nav">
-  <div>🏠<br>Home</div>
-  <div>📊<br>Báo cáo</div>
-  <div>⚙️<br>Cài đặt</div>
-</div>
+      <!-- =================== PAGE: DASHBOARD =================== -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-scroll">
+          <!-- Month Selector -->
+          <div class="month-bar">
+            <button class="month-nav" onclick="Dashboard.prevMonth()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span id="current-month-label">Tháng 5, 2026</span>
+            <button class="month-nav" onclick="Dashboard.nextMonth()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
 
-<script src="app.js"></script>
+          <!-- Stats Cards -->
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon ic-green">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Phòng có người</span>
+                <span class="stat-value" id="stat-occupied">--/--</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon ic-blue">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Dự thu tháng này</span>
+                <span class="stat-value" id="stat-total-expected">--</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon ic-success">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Đã thu</span>
+                <span class="stat-value" id="stat-collected">--</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon ic-danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Chưa thu</span>
+                <span class="stat-value" id="stat-pending">--</span>
+              </div>
+            </div>
+          </div>
 
-<!--
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
--->
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all" onclick="Dashboard.setFilter('all', this)">Tất cả</button>
+            <button class="filter-btn" data-filter="occupied" onclick="Dashboard.setFilter('occupied', this)">Có người</button>
+            <button class="filter-btn" data-filter="paid" onclick="Dashboard.setFilter('paid', this)">Đã thu</button>
+            <button class="filter-btn" data-filter="unpaid" onclick="Dashboard.setFilter('unpaid', this)">Chưa thu</button>
+            <button class="filter-btn" data-filter="empty" onclick="Dashboard.setFilter('empty', this)">Trống</button>
+          </div>
 
+          <!-- Room Grid -->
+          <div class="room-grid" id="room-grid">
+            <!-- Filled by JS -->
+          </div>
+
+          <div class="bottom-space"></div>
+        </div>
+      </section>
+
+      <!-- =================== PAGE: ROOM DETAIL =================== -->
+      <section id="page-room-detail" class="page">
+        <div class="page-scroll" id="room-detail-content">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- =================== PAGE: INVOICE =================== -->
+      <section id="page-invoice" class="page">
+        <div class="page-scroll" id="invoice-content">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- =================== PAGE: TENANTS =================== -->
+      <section id="page-tenants" class="page">
+        <div class="page-scroll">
+          <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="tenant-search" placeholder="Tìm tên hoặc số phòng..." oninput="Tenants.search(this.value)">
+          </div>
+          <div id="tenant-list"></div>
+          <div class="bottom-space"></div>
+        </div>
+      </section>
+
+      <!-- =================== PAGE: SETTINGS =================== -->
+      <section id="page-settings" class="page">
+        <div class="page-scroll">
+          <div class="settings-section">
+            <div class="settings-group-title">Kết nối Google Sheets</div>
+            <div class="settings-card">
+              <div class="setting-row">
+                <label>Script Web App URL</label>
+                <input type="url" id="setting-script-url" placeholder="https://script.google.com/..." class="setting-input">
+              </div>
+              <div class="setting-row">
+                <label>Sheet ID (tuỳ chọn)</label>
+                <input type="text" id="setting-sheet-id" placeholder="ID của Google Sheet" class="setting-input">
+              </div>
+              <button class="btn-primary full-width" onclick="Settings.saveSheets()">Lưu & Kiểm tra kết nối</button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-group-title">Thông tin nhà trọ</div>
+            <div class="settings-card">
+              <div class="setting-row">
+                <label>Tên nhà trọ</label>
+                <input type="text" id="setting-house-name" placeholder="Nhà Trọ Bình An" class="setting-input">
+              </div>
+              <div class="setting-row">
+                <label>Địa chỉ</label>
+                <input type="text" id="setting-house-address" placeholder="123 Đường ABC..." class="setting-input">
+              </div>
+              <div class="setting-row">
+                <label>Số phòng</label>
+                <input type="number" id="setting-room-count" min="1" max="200" placeholder="20" class="setting-input" style="width:80px">
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-group-title">Giá dịch vụ mặc định</div>
+            <div class="settings-card">
+              <div class="setting-row">
+                <label>Giá điện (đ/kWh)</label>
+                <input type="number" id="setting-elec-price" placeholder="3500" class="setting-input" style="width:100px">
+              </div>
+              <div class="setting-row">
+                <label>Giá nước (đ/khối)</label>
+                <input type="number" id="setting-water-price" placeholder="15000" class="setting-input" style="width:100px">
+              </div>
+              <div class="setting-row">
+                <label>Tiền Wifi (đ/tháng)</label>
+                <input type="number" id="setting-wifi-price" placeholder="100000" class="setting-input" style="width:100px">
+              </div>
+              <div class="setting-row">
+                <label>Dịch vụ chung (đ/tháng)</label>
+                <input type="number" id="setting-service-price" placeholder="50000" class="setting-input" style="width:100px">
+              </div>
+              <button class="btn-primary full-width" onclick="Settings.save()">Lưu cài đặt</button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-group-title">Quản lý phòng</div>
+            <div class="settings-card">
+              <button class="btn-outline full-width" onclick="Settings.exportData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Xuất dữ liệu (JSON)
+              </button>
+              <div style="height:10px"></div>
+              <button class="btn-danger full-width" onclick="Settings.clearCache()">Xoá cache & tải lại</button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-group-title">Phiên bản</div>
+            <div class="settings-card" style="text-align:center; color: var(--text-muted); font-size:13px; padding: 16px;">
+              Quản Lý Phòng Trọ v1.0.0<br>
+              <span style="font-size:11px">Dữ liệu từ Google Sheets</span>
+            </div>
+          </div>
+
+          <div class="bottom-space"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav id="bottom-nav">
+      <div class="safe-area-bottom">
+        <div class="nav-items">
+          <button class="nav-item active" data-page="dashboard" onclick="App.navigate('dashboard')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Tổng quan</span>
+          </button>
+          <button class="nav-item" data-page="tenants" onclick="App.navigate('tenants')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Khách thuê</span>
+          </button>
+          <button class="nav-item fab-placeholder" data-page="" onclick="App.openAddRoom()">
+            <div class="fab-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <span>Thêm</span>
+          </button>
+          <button class="nav-item" data-page="invoices-list" onclick="App.navigate('invoices-list')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Hoá đơn</span>
+          </button>
+          <button class="nav-item" data-page="settings" onclick="App.navigate('settings')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Cài đặt</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+  </div><!-- end #app -->
+
+  <!-- MODAL OVERLAY -->
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="Modal.closeOnOverlay(event)">
+    <div id="modal-sheet" class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/sheets.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/rooms.js"></script>
+  <script src="js/tenants.js"></script>
+  <script src="js/invoices.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+  </script>
 </body>
 </html>
